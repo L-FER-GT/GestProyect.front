@@ -22,5 +22,5 @@ Este es el frontend de una aplicación de administración de proyectos desarroll
 1. Clona este repositorio en tu máquina local:
 
    ```bash
-   git clone https://github.com/tu-usuario/proyecto-administracion-proyectos-frontend.git
+   git clone https://github.com/L-FER-GT/GestProyect.front.git
    ```
