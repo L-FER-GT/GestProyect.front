@@ -26,15 +26,10 @@ import Footer from "../components/footerview";
 //Paginas
 import WelcomePage from "../options/welcome/welcomePage";
 import SettingsPage from "../options/settings/settingsPage";
-import ProovedoresPage from "../options/proovedores/proovedoresPage";
 import MyProfilePage from "../options/myProfile/myProfile";
-import AlmacenPage from "../options/almacen/almacenPage";
-import ModelosPage from "../options/modelos/modelosPage";
-import DespacharProductosPage from "../options/productos/despacharProducto";
 //QUERIES
 import { getDataUser } from "../../conexion/ConsultasUsers";
-import AgregarProductosPage from "../options/productos/agregarProductoPage";
-import MasVendidosPage from "../options/masVendidos/masVendidosPage";
+import { getFileByID } from "../../conexion/ConsultasArchivos";
 
 const drawerWidth = 240;
 
@@ -108,7 +103,7 @@ const Drawer = styled(MuiDrawer, {
 //------------------------------------------------------------------------//
 export default function Home({ onChangeScreen, onRefleshUser, idUser }) {
   const [open, setOpen] = useState(false);
-  const [dataUser, setDataUser] = useState(null);
+  const [dataUser, setDataUser] = useState({});
   function regenerateDataUser() {
     getDataUser({
       onCallBackData: (data) => {
@@ -130,7 +125,7 @@ export default function Home({ onChangeScreen, onRefleshUser, idUser }) {
   const [selectedPage, setSelectedPage] = useState("Welcome");
   //Control menu Settings
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
+  const [image, setImage] = React.useState(null);
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -138,6 +133,20 @@ export default function Home({ onChangeScreen, onRefleshUser, idUser }) {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+  useEffect(() => {
+    if (dataUser && dataUser.Cod_Image_Perfil) {
+      getFileByID({
+        onCallBackData: (imageData) => {
+          const bufferData = new Uint8Array(imageData.archivo.data);
+          const blob = new Blob([bufferData], { type: imageData.archivo.type });
+          const imageUrl = URL.createObjectURL(blob);
+          setImage(imageUrl);
+        },
+        sendData: { id: dataUser.Cod_Image_Perfil },
+      });
+    }
+  }, [dataUser.Cod_Image_Perfil]);
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -170,7 +179,14 @@ export default function Home({ onChangeScreen, onRefleshUser, idUser }) {
             <Grid container item xs={6} justifyContent={"flex-end"}>
               <Box sx={{ flexGrow: 0 }}>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar sx={{ bgcolor: "red", color: "white" }}>{"L"}</Avatar>
+                  {image && (
+                    <Avatar src={image} sx={{ width: 56, height: 56 }} />
+                  )}
+                  {!image && (
+                    <Avatar sx={{ bgcolor: "red", color: "white" }}>
+                      {"L"}
+                    </Avatar>
+                  )}
                 </IconButton>
                 <Menu
                   sx={{ mt: "45px" }}

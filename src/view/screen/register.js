@@ -22,20 +22,18 @@ import { setRegisterNewUser } from "../../conexion/ConsultasUsers";
 
 const RegisterUser = ({ onChangeScreen, users, onRefleshUser }) => {
   const [form, setForm] = useState({
-    DocumentoIdentidad: "",
+    Gmail: "",
     Nombres: "",
     Apellidos: "",
-    Cargo: "",
     Contacto: "",
     User: "",
     Password: "",
     VerifPass: "",
   });
   const [formErrors, setFormErros] = useState({
-    DocumentoIdentidad: "",
+    Gmail: "",
     Nombres: "",
     Apellidos: "",
-    Cargo: "",
     Contacto: "",
     User: "",
     Password: "",
@@ -65,8 +63,8 @@ const RegisterUser = ({ onChangeScreen, users, onRefleshUser }) => {
       errors.Apellidos = "Este campo no puede estar Vacio";
       flagDataValida = false;
     }
-    if (form.DocumentoIdentidad === "") {
-      errors.DocumentoIdentidad = "Este campo no puede estar Vacio";
+    if (form.Gmail === "") {
+      errors.Gmail = "Este campo no puede estar Vacio";
       flagDataValida = false;
     }
     if (form.User === "") {
@@ -111,10 +109,9 @@ const RegisterUser = ({ onChangeScreen, users, onRefleshUser }) => {
         onRefleshUser();
         onChangeScreen("Login");
         setForm({
-          DocumentoIdentidad: "",
+          Gmail: "",
           Nombres: "",
           Apellidos: "",
-          Cargo: "",
           Contacto: "",
           User: "",
           Password: "",
@@ -184,11 +181,11 @@ const RegisterUser = ({ onChangeScreen, users, onRefleshUser }) => {
                 margin="dense"
                 size="small"
                 fullWidth
-                label="Documento de Identidad"
-                name="DocumentoIdentidad"
-                value={form.DocumentoIdentidad}
-                error={formErrors.DocumentoIdentidad !== ""}
-                helperText={formErrors.DocumentoIdentidad}
+                label="Gmail"
+                name="Gmail"
+                value={form.Gmail}
+                error={formErrors.Gmail !== ""}
+                helperText={formErrors.Gmail}
                 onChange={handleInputChange}
               />
             </Grid>

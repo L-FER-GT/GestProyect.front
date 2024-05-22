@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
-import { Button } from '@mui/material';
+// import { Button } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import ImageUploadDialog from '../../dialogs/dialogNewImage';
-import ImageView from '../../components/imageView';
+// import ImageUploadDialog from '../../dialogs/dialogNewImage';
+// import ImageView from '../../components/imageView';
 //  QUIERIES
-import { getImageByID } from '../../../conexion/ConsultasProveedor';
+// import { getImageByID } from '../../../conexion/ConsultasArchivos';
 
 const WelcomePage = () => {
-  const [openDialog,setOpenDialog]=useState(false);
+  // const [openDialog,setOpenDialog]=useState(false);
   // const [image, setImage]=useState(null);
   // function obtenerImagen(){
   //     getImageByID({onCallBackData:(data)=>{console.log(data);

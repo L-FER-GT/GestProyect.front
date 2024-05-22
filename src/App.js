@@ -11,11 +11,10 @@ function App() {
   const [screenSelect, setScreenSelect] = useState("Login");
   const [usuarios, setUsuarios] = useState([]);
   const [idUser, setIdUser] = useState(null);
-
   function obtenerUsuarios() {
     getUsers({
       onCallBackData: (data) => {
-        const userArray = data.map((item) => item.Usuario);
+        const userArray = data.map((item) => item.User_Name);
         setUsuarios(userArray);
       },
       onError: (err) => {

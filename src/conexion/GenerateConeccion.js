@@ -22,7 +22,7 @@ export const postConsult = (enlace, { onCallBackData, onError, sendData }) => {
     });
 };
 
-export const postImage = (enlace, { onCallBackData, onError, sendData }) => {
+export const postFile = (enlace, { onCallBackData, onError, sendData }) => {
   axios
     .post(enlace, sendData, {
       headers: {

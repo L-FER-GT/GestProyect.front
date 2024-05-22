@@ -2,42 +2,62 @@ import React, { useEffect, useState } from "react";
 import { Button, Box, Grid, TextField, Alert } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { modifyDataUser } from "../../../conexion/ConsultasUsers";
-
+import ImageView from "../../components/imageView";
+import ImageUploader from "../../components/imageUploader";
+import {
+  getFileByID,
+  setFilesUpdate,
+} from "../../../conexion/ConsultasArchivos";
 const MyProfilePage = ({ dataUser, idUser, onRegenerateUser }) => {
   const [subidoConExito, setSubidoConExito] = useState(false);
+  const [image, setImage] = useState(null);
+  const [esNewImage, setEsNewImage] = useState(false);
   const [form, setForm] = useState({
-    DocumentoIdentidad: "",
+    Gmail: "",
     Nombres: "",
     Apellidos: "",
-    Cargo: "",
     Contacto: "",
     User: "",
     Password: "",
     VerifPass: "",
+    Cod_Image_Perfil: null,
   });
   const [formErrors, setFormErros] = useState({
-    DocumentoIdentidad: "",
+    Gmail: "",
     Nombres: "",
     Apellidos: "",
-    Cargo: "",
     Contacto: "",
     User: "",
     Password: "",
     VerifPass: "",
+    Cod_Image_Perfil: null,
   });
 
   useEffect(() => {
     if (dataUser) {
       let auxPerfil = {};
-      auxPerfil.User = dataUser.Usuario;
+      auxPerfil.User = dataUser.User_Name;
       auxPerfil.Apellidos = dataUser.Apellidos;
-      auxPerfil.Cargo = dataUser.Cargo;
-      auxPerfil.DocumentoIdentidad = dataUser.DocumentoIdentidad;
+      auxPerfil.Gmail = dataUser.Gmail;
       auxPerfil.Contacto = dataUser.Informacion_Contacto;
       auxPerfil.Nombres = dataUser.Nombres;
+      auxPerfil.Cod_Image_Perfil = dataUser.Cod_Image_Perfil;
       setForm({ ...form, ...auxPerfil });
     }
   }, [dataUser]);
+
+  useEffect(() => {
+    if (form.Cod_Image_Perfil) {
+      getFileByID({
+        onCallBackData: (imageData) => {
+          const bufferData = new Uint8Array(imageData.archivo.data);
+          const blob = new Blob([bufferData], { type: imageData.archivo.type });
+          setImage(blob);
+        },
+        sendData: { id: form.Cod_Image_Perfil },
+      });
+    }
+  }, [form.Cod_Image_Perfil]);
 
   const handleInputChange = (e) => {
     setForm({
@@ -57,23 +77,46 @@ const MyProfilePage = ({ dataUser, idUser, onRegenerateUser }) => {
       errors.Apellidos = "Este campo no puede estar Vacio";
       flagDataValida = false;
     }
-    if (form.DocumentoIdentidad === "") {
-      errors.DocumentoIdentidad = "Este campo no puede estar Vacio";
+    if (form.Gmail === "") {
+      errors.Gmail = "Este campo no puede estar Vacio";
       flagDataValida = false;
     }
 
     if (flagDataValida) {
-      const newValueUser = { ...form, idUser: idUser };
-      modifyDataUser({
-        onCallBackData: (data) => {
-          setSubidoConExito(true);
-          onRegenerateUser();
-        },
-        sendData: newValueUser,
-        onError: (err) => {
-          console.error(err);
-        },
-      });
+      
+      if (esNewImage && image) {
+        setFilesUpdate({
+          sendData: { nombre: "Foto perfil", file: image },
+          onCallBackData: (data) => {
+            const newValueUser = { ...form, idUser: idUser,Cod_Image_Perfil:data.idFile  };
+            modifyDataUser({
+              onCallBackData: () => {
+                setSubidoConExito(true);
+                onRegenerateUser();
+              },
+              sendData: newValueUser,
+              onError: (err) => {
+                console.error(err);
+              },
+            });
+          },
+          onError: (err) => {
+            console.error(err);
+          },
+        });
+      } else {
+        const newValueUser = { ...form, idUser: idUser };
+        modifyDataUser({
+          onCallBackData: (data) => {
+            setSubidoConExito(true);
+            onRegenerateUser();
+          },
+          sendData: newValueUser,
+          onError: (err) => {
+            console.error(err);
+          },
+        });
+      }
     } else {
       setFormErros({ ...formErrors, ...errors });
     }
@@ -81,7 +124,12 @@ const MyProfilePage = ({ dataUser, idUser, onRegenerateUser }) => {
   return (
     <Box p={3}>
       <Paper elevation={3} style={{ padding: "20px" }}>
-        <Grid container justifyContent={"center"} alignContent={"center"}>
+        <Grid
+          container
+          justifyContent={"center"}
+          alignContent={"center"}
+          spacing={2}
+        >
           <Grid container item xs={4}>
             <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
               Editar Cuenta
@@ -122,11 +170,11 @@ const MyProfilePage = ({ dataUser, idUser, onRegenerateUser }) => {
                 margin="dense"
                 size="small"
                 fullWidth
-                label="Documento de Identidad"
-                name="DocumentoIdentidad"
-                value={form.DocumentoIdentidad}
-                error={formErrors.DocumentoIdentidad !== ""}
-                helperText={formErrors.DocumentoIdentidad}
+                label="Gmail"
+                name="Gmail"
+                value={form.Gmail}
+                error={formErrors.Gmail !== ""}
+                helperText={formErrors.Gmail}
                 onChange={handleInputChange}
               />
             </Grid>
@@ -139,18 +187,6 @@ const MyProfilePage = ({ dataUser, idUser, onRegenerateUser }) => {
                 label="Telefono"
                 name="Contacto"
                 value={form.Contacto}
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                margin="dense"
-                size="small"
-                fullWidth
-                label="Cargo en la Empresa"
-                name="Cargo"
-                value={form.Cargo}
                 onChange={handleInputChange}
               />
             </Grid>
@@ -189,6 +225,38 @@ const MyProfilePage = ({ dataUser, idUser, onRegenerateUser }) => {
                 Subido con éxito
               </Alert>
             )}
+          </Grid>
+          <Grid
+            item
+            container
+            xs={4}
+            alignContent={"center"}
+            justifyContent={"center"}
+          >
+            <Grid
+              item
+              container
+              xs={12}
+              alignContent={"center"}
+              justifyContent={"center"}
+            >
+              Agregar Foto de Perfil
+            </Grid>
+            <Grid
+              item
+              container
+              xs={12}
+              alignContent={"center"}
+              justifyContent={"center"}
+            >
+              <ImageUploader
+                image={image}
+                onHandleChangeImage={(value) => {
+                  setEsNewImage(true);
+                  setImage(value);
+                }}
+              />
+            </Grid>
           </Grid>
         </Grid>
       </Paper>

@@ -13,7 +13,7 @@ import {
 //COMPONENTS
 import ImageUploader from "../components/imageUploader";
 //QUERIES
-import { setImageUpdate } from "../../conexion/ConsultasProveedor";
+import { setFilesUpdate } from "../../conexion/ConsultasArchivos";
 const ImageUploadDialog = ({ open, onClose, tipoImagen }) => {
   const [nombreImagen, setNombreImagen] = useState("");
   const [subidoConExito, setSubidoConExito] = useState(false);
@@ -22,7 +22,7 @@ const ImageUploadDialog = ({ open, onClose, tipoImagen }) => {
 
   const handleSubirClick = () => {
     setLoading(true);
-    setImageUpdate({
+    setFilesUpdate({
       sendData: { nombre: nombreImagen, image: image, tipo: tipoImagen},
       onCallBackData: (data) => {
         setLoading(false);

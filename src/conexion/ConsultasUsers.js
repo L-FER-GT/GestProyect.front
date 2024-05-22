@@ -15,7 +15,7 @@ export const getValidateUser = ({ onCallBackData=()=>{}, onError=()=>{}, sendDat
 };
 
 export const getDataUser = ({ onCallBackData=()=>{}, onError=()=>{}, sendData=''}) => {
-    postConsult(`${enlace}/dataTrabajador`, { onCallBackData, onError, sendData})
+    postConsult(`${enlace}/dataUsuario`, { onCallBackData, onError, sendData})
 };
 
 export const modifyDataUser = ({ onCallBackData=()=>{}, onError=()=>{}, sendData=''}) => {
