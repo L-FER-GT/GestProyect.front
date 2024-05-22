@@ -12,6 +12,9 @@ import Divider from "@mui/material/Divider";
 import { Menu, MenuItem } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
+
+import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
+import { TreeItem } from "@mui/x-tree-view/TreeItem";
 //icons
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -30,6 +33,9 @@ import MyProfilePage from "../options/myProfile/myProfile";
 //QUERIES
 import { getDataUser } from "../../conexion/ConsultasUsers";
 import { getFileByID } from "../../conexion/ConsultasArchivos";
+import { MyTask } from "../options/myTask";
+import { MyProject } from "../options/myProject";
+import { getProjectsByID } from "../../conexion/ConsultasProyecto";
 
 const drawerWidth = 240;
 
@@ -146,7 +152,18 @@ export default function Home({ onChangeScreen, onRefleshUser, idUser }) {
       });
     }
   }, [dataUser.Cod_Image_Perfil]);
-
+  const [dataProjects, setDataProjects] = useState([]);
+  function onRefleshProjects() {
+    getProjectsByID({
+      onCallBackData: (data) => {
+        setDataProjects(data.proyecto);
+      },
+      sendData: { idUsuario: idUser },
+    });
+  }
+  useEffect(() => {
+    onRefleshProjects();
+  }, []);
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -229,7 +246,7 @@ export default function Home({ onChangeScreen, onRefleshUser, idUser }) {
           </Grid>
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={open}>
+      <Drawer variant="permanent" open={true}>
         <DrawerHeader />
         <Divider />
         <List key={"List_1"}>
@@ -246,6 +263,20 @@ export default function Home({ onChangeScreen, onRefleshUser, idUser }) {
             />
           ))}
         </List>
+        <SimpleTreeView
+          onSelectedItemsChange={(e, ids) => {
+            console.log(ids);
+          }}
+        >
+          <TreeItem itemId="proyectosAcutales" label="MIS PROYECTOS">
+            {dataProjects.map((row, index) => {
+              return (
+                <TreeItem key={index} itemId={`${row.ID_Proyecto}`} label={row.Titulo} />
+              );
+            })}
+          </TreeItem>
+        </SimpleTreeView>
+
         <Divider />
         <List key={"List_2"}>
           {listaPaginas_2.map((item, index) => (
@@ -282,6 +313,15 @@ export default function Home({ onChangeScreen, onRefleshUser, idUser }) {
                 dataUser={dataUser}
                 idUser={idUser}
                 onRegenerateUser={regenerateDataUser}
+              />
+            )}
+            {selectedPage === "MyTask" && <MyTask />}
+            {selectedPage === "MyPoject" && (
+              <MyProject
+                onRefleshProjects={onRefleshProjects}
+                idUser={idUser}
+                dataProjects={dataProjects}
+                dataUser={dataUser}
               />
             )}
           </Box>

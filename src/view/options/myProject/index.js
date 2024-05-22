@@ -1,0 +1,1 @@
+export {default as MyProject} from './myProject'
