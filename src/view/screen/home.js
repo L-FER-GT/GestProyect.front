@@ -108,7 +108,7 @@ const Drawer = styled(MuiDrawer, {
 //-------------------------------MAIN-------------------------------------//
 //------------------------------------------------------------------------//
 export default function Home({ onChangeScreen, onRefleshUser, idUser }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [dataUser, setDataUser] = useState({});
   function regenerateDataUser() {
     getDataUser({
@@ -178,7 +178,7 @@ export default function Home({ onChangeScreen, onRefleshUser, idUser }) {
             <Grid container item xs={6} justifyContent={"flex-start"}>
               <IconButton
                 aria-label="open drawer"
-                onClick={handleChangeDrawer}
+                onClick={()=>{}}//{handleChangeDrawer}
                 edge="start"
                 sx={{
                   marginRight: 5,
@@ -271,7 +271,7 @@ export default function Home({ onChangeScreen, onRefleshUser, idUser }) {
           <TreeItem itemId="proyectosAcutales" label="MIS PROYECTOS">
             {dataProjects.map((row, index) => {
               return (
-                <TreeItem key={index} itemId={`${row.ID_Proyecto}`} label={row.Titulo} />
+                <TreeItem key={index} itemId={`${row.ID_Proyecto}`} label={row.Titulo} onClick={()=>{console.log(row.ID_Proyecto)}}/>
               );
             })}
           </TreeItem>
